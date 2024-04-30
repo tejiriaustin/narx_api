@@ -9,7 +9,7 @@ require (
 	github.com/mailjet/mailjet-apiv3-go/v4 v4.0.1
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cobra v1.8.0
-	github.com/tejiriaustin/slabmark-api v0.0.0-20231028154750-a8d68894a1a5
+	github.com/tejiriaustin/narx_api v0.0.0-20231028154750-a8d68894a1a5
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.17.0

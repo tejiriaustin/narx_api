@@ -1,6 +1,8 @@
 package messaging
 
 import (
+	"log"
+
 	"github.com/mailjet/mailjet-apiv3-go/v4"
 )
 
@@ -26,7 +28,7 @@ func NewMailjetClient(publicKey, privateKey string, opts ...Options) *MailjetCli
 	return m
 }
 
-func (m *MailjetClient) Push(mail Mail) error {
+func (m *MailjetClient) Push(to string, msg string) error {
 	messagesInfo := []mailjet.InfoMessagesV31{
 		{
 			From: &mailjet.RecipientV31{
@@ -35,18 +37,18 @@ func (m *MailjetClient) Push(mail Mail) error {
 			},
 			To: &mailjet.RecipientsV31{
 				mailjet.RecipientV31{
-					Email: mail.Email,
-					Name:  mail.Name,
+					Email: to,
+					Name:  "",
 				},
 			},
-			Subject:  mail.Subject,
-			TextPart: mail.TextPart,
-			HTMLPart: mail.HtmlPart,
+			TextPart: msg,
+			HTMLPart: msg,
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo}
 	_, err := m.client.SendMailV31(&messages)
 	if err != nil {
+		log.Println("Mailjet send failed: ", err)
 		return err
 	}
 	return nil

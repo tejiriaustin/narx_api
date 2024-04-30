@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tejiriaustin/slabmark-api/events"
 
 	"go.uber.org/zap"
 
-	"github.com/tejiriaustin/slabmark-api/consumer"
-	"github.com/tejiriaustin/slabmark-api/messaging"
-	"github.com/tejiriaustin/slabmark-api/templates"
+	"github.com/tejiriaustin/narx_api/consumer"
+	"github.com/tejiriaustin/narx_api/events"
+	"github.com/tejiriaustin/narx_api/messaging"
+	"github.com/tejiriaustin/narx_api/templates"
 )
 
 const (
@@ -35,13 +35,7 @@ func ForgotPasswordNotificationEventHandler(mailer messaging.Messaging) consumer
 			return errors.New("failed to send forgot password email")
 		}
 
-		mail := messaging.BuildMail(
-			data.FirstName,
-			data.Email,
-			"Forgot your password",
-			template,
-		)
-		err = mailer.Push(mail)
+		err = mailer.Push(data.Email, template)
 		if err != nil {
 			zap.L().Error("failed to push mail", zap.Error(err))
 			return err

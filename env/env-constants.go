@@ -26,4 +26,10 @@ const (
 	MailjetApikeyPublic = "MAILJET_APIKEY_PUBLIC"
 
 	MailjetApikeyPrivate = "MAILJET_APIKEY_PRIVATE"
+
+	SmtpHost = "SMTP_HOST"
+
+	SmtpSender = "SMTP_ADDRESS"
+
+	SmtpPassword = "SMTP_PASSWORD"
 )

@@ -2,7 +2,7 @@ package messaging
 
 type (
 	Messaging interface {
-		Push(Mail) error
+		Push(to string, msg string) error
 	}
 
 	Author struct {

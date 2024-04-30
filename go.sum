@@ -93,8 +93,8 @@ github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
-github.com/tejiriaustin/slabmark-api v0.0.0-20231028154750-a8d68894a1a5 h1:ak0ev88lU/rkuUbeUnu/+ojm3mIItgRArmb+T8yQASc=
-github.com/tejiriaustin/slabmark-api v0.0.0-20231028154750-a8d68894a1a5/go.mod h1:BSL3DlovgUpClI4a40GQyUhSC/nmb5PJgDmH86J74JU=
+github.com/tejiriaustin/narx_api v0.0.0-20231028154750-a8d68894a1a5 h1:ak0ev88lU/rkuUbeUnu/+ojm3mIItgRArmb+T8yQASc=
+github.com/tejiriaustin/narx_api v0.0.0-20231028154750-a8d68894a1a5/go.mod h1:BSL3DlovgUpClI4a40GQyUhSC/nmb5PJgDmH86J74JU=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.11 h1:BMaWp1Bb6fHwEtbplGBGJ498wD+LKlNSl25MjdZY4dU=

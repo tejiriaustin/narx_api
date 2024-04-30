@@ -23,7 +23,7 @@ type (
 )
 
 func NewRepositoryContainer(dbConn *database.Client) *Container {
-	log.Println(" building repository container...")
+	log.Println("building repository container...")
 
 	return &Container{
 		AccountsRepo: NewRepository[models.Account](dbConn.GetCollection("accounts")),

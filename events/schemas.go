@@ -1,6 +1,6 @@
 package events
 
-import "github.com/tejiriaustin/slabmark-api/models"
+import "github.com/tejiriaustin/narx_api/models"
 
 type (
 	ForgotPasswordNotificationSchema struct {

@@ -3,12 +3,16 @@ package consumer
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
+	"time"
 
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 
-	"github.com/tejiriaustin/narx_api/database"
+	"github.com/tejiriaustin/narx_api/repository"
 )
 
 const (
@@ -16,9 +20,12 @@ const (
 )
 
 type (
+	Fetcher interface {
+		Find(ctx context.Context, filter interface{}, opts ...*options.FindOptions) (*mongo.Cursor, error)
+	}
 	Consumer struct {
 		maxWorkerChans uint
-		refreshTime    int
+		refreshTime    time.Duration
 		handlers       map[string]Handler
 	}
 
@@ -34,7 +41,7 @@ type (
 func newConsumer() *Consumer {
 	return &Consumer{
 		maxWorkerChans: defaultMaxWorkers,
-		refreshTime:    0,
+		refreshTime:    15 * time.Second,
 		handlers:       make(map[string]Handler),
 	}
 }
@@ -53,21 +60,13 @@ func (l *Consumer) SetHandler(key string, handler Handler) *Consumer {
 	return l
 }
 
-func (l *Consumer) ListenAndServe(ctx context.Context, redisClient *database.RedisClient) {
+func (l *Consumer) ListenAndServe(ctx context.Context, pubSub Fetcher) {
 	log.Print("initializing  Consumer...")
 
 	workerChannels := make(chan Message, l.maxWorkerChans)
 	defer func() {
 		close(workerChannels)
 	}()
-
-	pubsub := redisClient.Subscribe(ctx)
-	defer func(pubsub *redis.PubSub) {
-		err := pubsub.Close()
-		if err != nil {
-			zap.L().Error("failed to close redis subscription connection", zap.Error(err))
-		}
-	}(pubsub)
 
 	log.Print("starting workers\n", "maxWorkers: ", l.maxWorkerChans)
 
@@ -77,20 +76,24 @@ func (l *Consumer) ListenAndServe(ctx context.Context, redisClient *database.Red
 
 	for {
 		zap.L().Info("pulling messages...")
-		message, err := pubsub.ReceiveMessage(ctx)
+		cursor, err := pubSub.Find(ctx, repository.NewQueryFilter().AddFilter("processed", false))
 		if err != nil {
 			zap.L().Error("failed to receive message", zap.Error(err))
 		}
-		if message == nil {
-			continue
+		for cursor.Next(ctx) {
+			var message Message
+
+			if err := cursor.Decode(&message); err != nil {
+				log.Fatal(err)
+			}
+			workerChannels <- message
+			fmt.Printf("%+v\n", message)
 		}
-		msg := new(Message)
-		err = json.Unmarshal([]byte(message.Payload), msg)
-		if err != nil {
-			return
+		if err = cursor.Err(); err != nil {
+			log.Fatal(err)
 		}
 
-		workerChannels <- *msg
+		time.Sleep(l.refreshTime)
 	}
 }
 
