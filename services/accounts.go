@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -204,21 +205,13 @@ func (s *AccountsService) ForgotPassword(ctx context.Context,
 		return nil, err
 	}
 
-	token, err := s.generateSignedToken(ctx, models.AccountInfo{
-		Id:    account.ID.Hex(),
-		Email: account.Email,
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	event := map[string]interface{}{
 		"id":         account.ID.Hex(),
 		"first_name": account.FirstName,
 		"last_name":  account.LastName,
 		"full_name":  account.FullName,
 		"email":      account.Email,
-		"link":       token,
+		"code":       rand.Int(),
 	}
 	err = publisher.Publish(ctx, notifications.ForgotPasswordNotification, "notification", event)
 	if err != nil {

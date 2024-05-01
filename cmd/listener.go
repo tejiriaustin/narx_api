@@ -43,11 +43,12 @@ func startListener(cmd *cobra.Command, args []string) {
 		config.GetAsString(env.SmtpHost),
 		config.GetAsString(env.SmtpPort),
 	)
+	db := dbConn.GetCollection("notifications")
 
-	listeners := consumer.NewConsumer().
+	listeners := consumer.NewConsumer(consumer.WithUpdater(db)).
 		SetHandler(notifications.ForgotPasswordNotification, notifications.ForgotPasswordNotificationEventHandler(mailer))
 
-	listeners.ListenAndServe(ctx, dbConn.GetCollection("notifications"))
+	listeners.ListenAndServe(ctx, db)
 }
 
 func setListenerEnvironment() env.Environment {

@@ -56,12 +56,10 @@ var ForgotPasswordTemplate = `
 
         <p>Dear %s,</p>
 
-        <p>It seems you've forgotten your password! Not to worry, we're here to help you regain access to your account. Follow the simple steps below to reset your password:</p>
+        <p>It seems you've forgotten your password! Not to worry, we're here to help you regain access to your account. Use the code below to reset your password</p>
 
         <ol>
-            <li>Click on the following link to reset your password: <a href="[Reset Password Link]">Reset Password</a></li>
-            <li>You'll be directed to a page where you can create a new password. Please choose a password that is secure but memorable.</li>
-            <li>Once you've set your new password, you'll be able to log back into your account as usual.</li>
+            <li>Code: %s </li>
         </ol>
 
         <p>If you didn't request this password reset, please disregard this email. Your account is still secure, and no changes have been made.</p>

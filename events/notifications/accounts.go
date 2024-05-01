@@ -21,7 +21,7 @@ func ForgotPasswordNotificationEventHandler(mailer messaging.Messaging) consumer
 	return func(ctx context.Context, msg events.Event) error {
 		fmt.Println("Forgot Password")
 
-		template, err := templates.NewTemplate(templates.FORGOT_PASSWORD)
+		template, err := templates.NewTemplate(templates.FORGOT_PASSWORD, msg.MsgBody["full_name"], msg.MsgBody["code"])
 		if err != nil {
 			zap.L().Error("failed to create template for forgot password", zap.String("template", template), zap.Any("data", msg))
 			return errors.New("failed to send forgot password email")
