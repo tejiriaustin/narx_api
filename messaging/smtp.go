@@ -23,7 +23,7 @@ func NewSMTP(pass, from, host, port string) *SMTP {
 }
 
 func (s *SMTP) Push(to string, msg string) error {
-	auth := smtp.PlainAuth("", s.From, s.Pass, s.Host)
+	auth := smtp.PlainAuth("", "tejiriaustin123@gmail.com", "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", "smtp.gmail.com:587")
 
 	err := smtp.SendMail(defaultAddr, auth, s.From, []string{to}, []byte(msg))
 	if err != nil {
