@@ -28,7 +28,7 @@ func (s *SMTP) Push(to string, msg string) error {
 	err := smtp.SendMail(defaultAddr, auth, s.From, []string{to}, []byte(msg))
 	if err != nil {
 		log.Printf("smtp error: %s", err)
-		return err""
+		return err
 	}
 
 	log.Println("mail sent successfully")
