@@ -35,17 +35,14 @@ type (
 	}
 
 	Account struct {
-		Shared     `bson:",inline"`
-		Username   string `json:"username" bson:"username"`
-		FirstName  string `json:"first_name" bson:"first_name"`
-		LastName   string `json:"last_name" bson:"last_name"`
-		FullName   string `json:"full_name" bson:"full_name"`
-		Phone      string `json:"phone" bson:"phone"`
-		Email      string `json:"email" bson:"email"`
-		Department string `json:"department" bson:"department"`
-		Status     Status `json:"status" bson:"status"`
-		Password   string `json:"password" bson:"password"`
-		Token      string `json:"token" bson:"-"`
+		Shared    `bson:",inline"`
+		FirstName string `json:"first_name" bson:"first_name"`
+		LastName  string `json:"last_name" bson:"last_name"`
+		FullName  string `json:"full_name" bson:"full_name"`
+		Email     string `json:"email" bson:"email"`
+		Status    Status `json:"status" bson:"status"`
+		Password  string `json:"password" bson:"password"`
+		Token     string `json:"token" bson:"-"`
 	}
 )
 

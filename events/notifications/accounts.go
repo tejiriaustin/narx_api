@@ -2,7 +2,6 @@ package notifications
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -19,23 +18,17 @@ const (
 )
 
 func ForgotPasswordNotificationEventHandler(mailer messaging.Messaging) consumer.Handler {
-	return func(ctx context.Context, msg consumer.Message) error {
+	return func(ctx context.Context, msg events.Event) error {
 		fmt.Println("Forgot Password")
-
-		var data events.ForgotPasswordNotificationSchema
-		err := json.Unmarshal([]byte(msg.Body), &data)
-		if err != nil {
-			zap.L().Error("failed to unmarshal message", zap.Error(err))
-			return err
-		}
 
 		template, err := templates.NewTemplate(templates.FORGOT_PASSWORD)
 		if err != nil {
-			zap.L().Error("failed to create template for forgot password", zap.String("template", template), zap.Any("data", data))
+			zap.L().Error("failed to create template for forgot password", zap.String("template", template), zap.Any("data", msg))
 			return errors.New("failed to send forgot password email")
 		}
+		email := msg.MsgBody["email"].(string)
 
-		err = mailer.Push(data.Email, template)
+		err = mailer.Push(email, template)
 		if err != nil {
 			zap.L().Error("failed to push mail", zap.Error(err))
 			return err

@@ -14,7 +14,7 @@ const (
 func NewTemplate(templateKey string, args ...any) (string, error) {
 	switch templateKey {
 	case FORGOT_PASSWORD:
-		return fmt.Sprintf(ForgortPasswordTemplate, args...), nil
+		return fmt.Sprintf(ForgotPasswordTemplate, args...), nil
 	case ACCOUNT_CREATED:
 		return fmt.Sprintf(AccountCreatedTemplate, args...), nil
 	default:

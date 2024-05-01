@@ -2,42 +2,47 @@ package publisher
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/tejiriaustin/narx_api/events"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"sync"
-
-	"github.com/tejiriaustin/narx_api/database"
 )
 
 type (
+	Inserter interface {
+		InsertOne(ctx context.Context, document interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error)
+	}
+
 	Publisher struct {
-		m      sync.Mutex
-		client *database.RedisClient
+		m        sync.Mutex
+		inserter Inserter
 	}
 
 	PublishInterface interface {
-		Publish(ctx context.Context, key string, message map[string]interface{}) error
+		Publish(ctx context.Context, key, kind string, message map[string]interface{}) error
 	}
 )
 
-func newPublisher(client *database.RedisClient) *Publisher {
+func newPublisher(inserter Inserter) *Publisher {
 	return &Publisher{
-		m:      sync.Mutex{},
-		client: client,
+		m:        sync.Mutex{},
+		inserter: inserter,
 	}
 }
-func NewPublisher(client *database.RedisClient) PublishInterface {
-	return newPublisher(client)
+func NewPublisher(inserter Inserter) PublishInterface {
+	return newPublisher(inserter)
 }
 
-func (p *Publisher) Publish(ctx context.Context, key string, message map[string]interface{}) error {
+func (p *Publisher) Publish(ctx context.Context, key, kind string, message map[string]interface{}) error {
+	id := message["id"].(string)
 	event := events.Event{
-		EventKey: key,
-		MsgBody:  message,
+		ID:        id,
+		EventKind: kind,
+		EventKey:  key,
+		MsgBody:   message,
+		Processed: false,
 	}
-	eventBytes, err := json.Marshal(event)
-	if err != nil {
-		return err
-	}
-	return p.client.Publish(ctx, string(eventBytes))
+
+	_, err := p.inserter.InsertOne(ctx, event)
+	return err
 }

@@ -5,15 +5,13 @@ import (
 	"github.com/tejiriaustin/narx_api/constants"
 	"github.com/tejiriaustin/narx_api/env"
 	"github.com/tejiriaustin/narx_api/publisher"
-	"github.com/tejiriaustin/narx_api/utils"
 	"log"
 )
 
 type (
 	Container struct {
-		AccountsService   AccountsServiceInterface
-		Publisher         publisher.PublishInterface
-		PasswordGenerator utils.StrGenFunc
+		AccountsService AccountsServiceInterface
+		Publisher       publisher.PublishInterface
 	}
 
 	Pager struct {

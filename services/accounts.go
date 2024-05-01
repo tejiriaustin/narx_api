@@ -43,7 +43,7 @@ type (
 	}
 
 	LoginUserInput struct {
-		Username string
+		Email    string
 		Password string
 	}
 	ForgotPasswordInput struct {
@@ -109,7 +109,6 @@ func (s *AccountsService) CreateUser(ctx context.Context,
 			ID:        primitive.NewObjectID(),
 			CreatedAt: &now,
 		},
-		Username:  input.FirstName,
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
 		Email:     input.Email,
@@ -117,8 +116,6 @@ func (s *AccountsService) CreateUser(ctx context.Context,
 		Password:  string(passwordHash),
 	}
 
-	account.FullName = account.GetFullName()
-	account.Username = account.GetUsername()
 	account.FullName = account.GetFullName()
 
 	acct, err := accountsRepo.Create(ctx, account)
@@ -145,7 +142,7 @@ func (s *AccountsService) EditAccount(ctx context.Context,
 	if input.Email != "" {
 		fields[models.FieldAccountEmail] = input.Email
 	}
-	
+
 	updates := map[string]interface{}{
 		"$set": fields,
 	}
@@ -164,7 +161,7 @@ func (s *AccountsService) LoginUser(ctx context.Context,
 	accountsRepo *repository.Repository[models.Account],
 ) (*models.Account, error) {
 
-	filter := repository.NewQueryFilter().AddFilter(models.FieldAccountUsername, input.Username)
+	filter := repository.NewQueryFilter().AddFilter(models.FieldAccountEmail, input.Email)
 
 	account, err := accountsRepo.FindOne(ctx, filter, nil, nil)
 	if err != nil {
@@ -179,12 +176,11 @@ func (s *AccountsService) LoginUser(ctx context.Context,
 	}
 
 	token, err := s.generateSignedToken(ctx, models.AccountInfo{
-		Id:         account.ID.Hex(),
-		FirstName:  account.FirstName,
-		LastName:   account.LastName,
-		FullName:   account.FullName,
-		Email:      account.Email,
-		Department: account.Department,
+		Id:        account.ID.Hex(),
+		FirstName: account.FirstName,
+		LastName:  account.LastName,
+		FullName:  account.FullName,
+		Email:     account.Email,
 	})
 	if err != nil {
 		return nil, errors.New("an error occurred: " + err.Error())
@@ -209,12 +205,8 @@ func (s *AccountsService) ForgotPassword(ctx context.Context,
 	}
 
 	token, err := s.generateSignedToken(ctx, models.AccountInfo{
-		Id:         account.ID.Hex(),
-		FirstName:  account.FirstName,
-		LastName:   account.LastName,
-		FullName:   account.FullName,
-		Email:      account.Email,
-		Department: account.Department,
+		Id:    account.ID.Hex(),
+		Email: account.Email,
 	})
 	if err != nil {
 		return nil, err
@@ -225,11 +217,10 @@ func (s *AccountsService) ForgotPassword(ctx context.Context,
 		"first_name": account.FirstName,
 		"last_name":  account.LastName,
 		"full_name":  account.FullName,
-		"department": account.Department,
 		"email":      account.Email,
 		"link":       token,
 	}
-	err = publisher.Publish(ctx, notifications.ForgotPasswordNotification, event)
+	err = publisher.Publish(ctx, notifications.ForgotPasswordNotification, "notification", event)
 	if err != nil {
 		return nil, err
 	}

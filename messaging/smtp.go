@@ -15,18 +15,17 @@ type SMTP struct {
 	To   string
 	Pass string
 	Host string
+	Port string
 }
 
-func NewSMTP(pass, from, host string) *SMTP {
-	if host == "" {
-		host = defaultAddr
-	}
-	return &SMTP{Pass: pass, Host: host, From: from}
+func NewSMTP(pass, from, host, port string) *SMTP {
+	return &SMTP{Pass: pass, Host: host, From: from, Port: port}
 }
 
 func (s *SMTP) Push(to string, msg string) error {
-	auth := smtp.PlainAuth("", s.From, s.From, "smtp.gmail.com")
-	err := smtp.SendMail(s.Host, auth, s.From, []string{to}, []byte(msg))
+	auth := smtp.PlainAuth("", s.From, s.Pass, s.Host)
+
+	err := smtp.SendMail(defaultAddr, auth, s.From, []string{to}, []byte(msg))
 	if err != nil {
 		log.Printf("smtp error: %s", err)
 		return err

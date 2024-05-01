@@ -37,7 +37,12 @@ func startListener(cmd *cobra.Command, args []string) {
 		_ = dbConn.Disconnect(context.TODO())
 	}()
 
-	mailer := messaging.NewSMTP(config.GetAsString(env.SmtpPassword), config.GetAsString(env.SmtpSender), config.GetAsString(env.SmtpHost))
+	mailer := messaging.NewSMTP(
+		config.GetAsString(env.SmtpPassword),
+		config.GetAsString(env.SmtpSender),
+		config.GetAsString(env.SmtpHost),
+		config.GetAsString(env.SmtpPort),
+	)
 
 	listeners := consumer.NewConsumer().
 		SetHandler(notifications.ForgotPasswordNotification, notifications.ForgotPasswordNotificationEventHandler(mailer))
@@ -49,15 +54,11 @@ func setListenerEnvironment() env.Environment {
 	staticEnvironment := env.NewEnvironment()
 
 	staticEnvironment.
-		SetEnv(env.RedisDsn, env.MustGetEnv(env.RedisDsn)).
-		SetEnv(env.RedisPort, env.MustGetEnv(env.RedisPort)).
-		SetEnv(env.RedisPass, env.MustGetEnv(env.RedisPass)).
 		SetEnv(env.MongoDsn, env.MustGetEnv(env.MongoDsn)).
 		SetEnv(env.MongoDbName, env.MustGetEnv(env.MongoDbName)).
-		SetEnv(env.MailjetApikeyPrivate, env.MustGetEnv(env.MailjetApikeyPrivate)).
-		SetEnv(env.MailjetApikeyPublic, env.MustGetEnv(env.MailjetApikeyPublic)).
 		SetEnv(env.SmtpHost, env.MustGetEnv(env.SmtpHost)).
 		SetEnv(env.SmtpSender, env.MustGetEnv(env.SmtpSender)).
+		SetEnv(env.SmtpPort, env.MustGetEnv(env.SmtpPort)).
 		SetEnv(env.SmtpPassword, env.MustGetEnv(env.SmtpPassword))
 
 	return staticEnvironment

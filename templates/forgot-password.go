@@ -1,91 +1,75 @@
 package templates
 
-var ForgortPasswordTemplate = `
+var ForgotPasswordTemplate = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
+    <title>Password Reset</title>
     <style>
         body {
-            font-family: Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
             padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-        .logo {
-            text-align: center;
-            padding: 10px 0;
-        }
-        .logo img {
-            max-width: 100px;
-            height: auto;
-        }
-        h1 {
-            color: #000;
-            font-size: 24px;
-            text-align: center;
-        }
-        .message {
-            margin: 20px 0;
-            color: #333;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .button {
-            text-align: center;
-            margin-top: 20px;
-        }
-        a.button-link {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 12px 24px;
-            text-decoration: none;
+            padding: 30px;
             border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        a.button-link:hover {
-            background-color: #0056b3;
+
+        h2 {
+            color: #333;
         }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #888;
-            font-size: 12px;
+
+        p {
+            color: #555;
+            line-height: 1.6;
         }
+
+        ol {
+            color: #555;
+            padding-left: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="logo">
-        <h1 style="color: #007BFF">Slabmark Nig Limited</h1>
+
+    <div class="container">
+
+        <h2>Reset Your Password</h2>
+
+        <p>Dear %s,</p>
+
+        <p>It seems you've forgotten your password! Not to worry, we're here to help you regain access to your account. Follow the simple steps below to reset your password:</p>
+
+        <ol>
+            <li>Click on the following link to reset your password: <a href="[Reset Password Link]">Reset Password</a></li>
+            <li>You'll be directed to a page where you can create a new password. Please choose a password that is secure but memorable.</li>
+            <li>Once you've set your new password, you'll be able to log back into your account as usual.</li>
+        </ol>
+
+        <p>If you didn't request this password reset, please disregard this email. Your account is still secure, and no changes have been made.</p>
+
+        <p>If you continue to experience any issues or have any questions, feel free to reach out to our support team at <a href="mailto:[Support Email]">[Support Email]</a>.</p>
+
     </div>
-    <h1>Forgot Password</h1>
-    <div class="message">
-        <p>We received a request to reset your password. To complete this process, please follow the instructions below:</p>
-    </div>
-    <div class="button">
-        <a href=" %s " class="button-link">Reset Your Password</a>
-    </div>
-    <div class="message">
-        <p>If you did not request this password reset, please disregard this email, and your password will remain unchanged.</p>
-    </div>
-    <div class="message">
-        <p>If you have any questions or need assistance, please contact our support team at <a href="tejiriaustin123@gmail.com">[Support Email Address]</a>.</p>
-    </div>
-    <div class="footer">
-        &copy; 2023 Slabmark Nig. Limited | Privacy Policy | Unsubscribe
-    </div>
-</div>
+
 </body>
-</html>`
+</html>
+`

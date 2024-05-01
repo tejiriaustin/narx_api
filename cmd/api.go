@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/tejiriaustin/narx_api/publisher"
 
 	"github.com/spf13/cobra"
 
@@ -37,17 +38,10 @@ func startApi(cmd *cobra.Command, args []string) {
 		_ = dbConn.Disconnect(context.TODO())
 	}()
 
-	redis, err := database.NewRedisClient(config.GetAsString(env.RedisDsn), config.GetAsString(env.RedisPass), config.GetAsString(env.RedisPort))
-	if err != nil {
-		panic("Couldn't connect to redis dsn: " + err.Error())
-	}
-	defer func() {
-		_ = redis.Disconnect(context.TODO())
-	}()
-
 	rc := repository.NewRepositoryContainer(dbConn)
 
 	sc := services.NewService(&config)
+	sc.Publisher = publisher.NewPublisher(dbConn.GetCollection("notifications"))
 
 	server.Start(ctx, sc, rc, &config)
 }
@@ -56,13 +50,11 @@ func setApiEnvironment() env.Environment {
 	staticEnvironment := env.NewEnvironment()
 
 	staticEnvironment.
-		SetEnv(env.EnvPort, env.GetEnv(env.EnvPort, "8080")).
-		SetEnv(env.RedisDsn, env.MustGetEnv(env.RedisDsn)).
-		SetEnv(env.RedisPort, env.MustGetEnv(env.RedisPort)).
-		SetEnv(env.RedisPass, env.MustGetEnv(env.RedisPass)).
+		SetEnv(env.Port, env.GetEnv(env.Port, "8080")).
 		SetEnv(env.MongoDsn, env.MustGetEnv(env.MongoDsn)).
 		SetEnv(env.MongoDbName, env.MustGetEnv(env.MongoDbName)).
-		SetEnv(env.JwtSecret, env.MustGetEnv(env.JwtSecret))
+		SetEnv(env.JwtSecret, env.MustGetEnv(env.JwtSecret)).
+		SetEnv(env.FrontendUrl, env.MustGetEnv(env.FrontendUrl))
 
 	return staticEnvironment
 }

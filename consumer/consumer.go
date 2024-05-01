@@ -2,8 +2,9 @@ package consumer
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/tejiriaustin/narx_api/events"
 	"log"
 	"strings"
 	"time"
@@ -23,18 +24,19 @@ type (
 	Fetcher interface {
 		Find(ctx context.Context, filter interface{}, opts ...*options.FindOptions) (*mongo.Cursor, error)
 	}
+	Updater interface {
+		UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error)
+	}
+
 	Consumer struct {
 		maxWorkerChans uint
 		refreshTime    time.Duration
 		handlers       map[string]Handler
+		updater        Updater
 	}
 
-	Message struct {
-		Key  string `json:"key"`
-		Body string `json:"body"`
-	}
+	Handler func(ctx context.Context, msg events.Event) error
 
-	Handler func(ctx context.Context, msg Message) error
 	Options func(*Consumer)
 )
 
@@ -63,7 +65,7 @@ func (l *Consumer) SetHandler(key string, handler Handler) *Consumer {
 func (l *Consumer) ListenAndServe(ctx context.Context, pubSub Fetcher) {
 	log.Print("initializing  Consumer...")
 
-	workerChannels := make(chan Message, l.maxWorkerChans)
+	workerChannels := make(chan events.Event, l.maxWorkerChans)
 	defer func() {
 		close(workerChannels)
 	}()
@@ -80,14 +82,14 @@ func (l *Consumer) ListenAndServe(ctx context.Context, pubSub Fetcher) {
 		if err != nil {
 			zap.L().Error("failed to receive message", zap.Error(err))
 		}
-		for cursor.Next(ctx) {
-			var message Message
 
-			if err := cursor.Decode(&message); err != nil {
+		for cursor.Next(ctx) {
+			var message events.Event
+
+			if err = cursor.Decode(&message); err != nil {
 				log.Fatal(err)
 			}
 			workerChannels <- message
-			fmt.Printf("%+v\n", message)
 		}
 		if err = cursor.Err(); err != nil {
 			log.Fatal(err)
@@ -101,31 +103,41 @@ func (l *Consumer) ListenAndServe(ctx context.Context, pubSub Fetcher) {
 // as messages become available over the channel, it looks over the map of configured handlers and routes messages by the key.
 // If no handlers are configured and a default handler has been set, the message is sent there.
 // else it logs and continues.
-func (l *Consumer) worker(ctx context.Context, msgChan <-chan Message) {
+func (l *Consumer) worker(ctx context.Context, msgChan <-chan events.Event) {
 	for msg := range msgChan {
-		_ = l.dispatcher(ctx, msg)
+		err := l.dispatcher(ctx, msg)
+		if err != nil {
+			zap.L().Error(err.Error(), zap.String("message", msg.EventKind))
+		}
 	}
 }
 
-func (l *Consumer) dispatcher(ctx context.Context, message Message) error {
-	msg := new(Message)
+func (l *Consumer) dispatcher(ctx context.Context, message events.Event) error {
+	msg := new(events.Event)
 
-	err := json.Unmarshal([]byte(message.Body), msg)
-	if err != nil {
-		return err
-	}
-
-	handlerFunc := l.handlers[message.Key]
+	handlerFunc := l.handlers[message.EventKey]
 
 	if handlerFunc == nil {
-		zap.L().Info("handlerfunc is nil", zap.Error(err), zap.String("message", message.Key))
-		return nil
+		zap.L().Error("handler func is nil", zap.String("message", message.EventKind))
+		return errors.New("handler func is nil")
 	}
+	fmt.Println("handler func")
 
 	if err := handlerFunc(ctx, message); err != nil {
-		zap.L().Error("failed to handle message", zap.Error(err), zap.String("message", message.Key))
+		zap.L().Error("failed to handle message", zap.Error(err), zap.String("message", message.EventKind))
 		return err
 	}
 
+	updates := map[string]interface{}{
+		"$sets": map[string]interface{}{
+			"processed": true,
+		},
+	}
+
+	_, err := l.updater.UpdateOne(ctx, repository.NewQueryFilter().AddFilter("_id", msg.ID), updates)
+	if err != nil {
+		zap.L().Error("failed to update message processed", zap.Error(err), zap.String("message", message.EventKind))
+		return err
+	}
 	return nil
 }

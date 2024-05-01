@@ -72,7 +72,7 @@ func (c *AccountsController) Login(
 		}
 
 		input := services.LoginUserInput{
-			Username: req.Username,
+			Email:    req.Email,
 			Password: req.Password,
 		}
 
@@ -127,7 +127,6 @@ func (c *AccountsController) ForgotPassword(
 	acctService services.AccountsServiceInterface,
 	accountsRepo *repository.Repository[models.Account],
 	publisher publisher.PublishInterface,
-
 ) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
