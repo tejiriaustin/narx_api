@@ -87,7 +87,7 @@ func (s *AccountsService) CreateUser(ctx context.Context,
 		return nil, errors.New("first name is required")
 	}
 
-	qf := repository.NewQueryFilter().AddFilter("email", input.Email)
+	qf := repository.NewQueryFilter().AddFilter(models.FieldAccountEmail, input.Email)
 	matchedUser, err := accountsRepo.FindOne(ctx, qf, nil, nil)
 	if err != nil && err != repository.NoDocumentsFound {
 		return nil, err

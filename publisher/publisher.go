@@ -3,6 +3,7 @@ package publisher
 import (
 	"context"
 	"github.com/tejiriaustin/narx_api/events"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"sync"
@@ -34,9 +35,8 @@ func NewPublisher(inserter Inserter) PublishInterface {
 }
 
 func (p *Publisher) Publish(ctx context.Context, key, kind string, message map[string]interface{}) error {
-	id := message["id"].(string)
 	event := events.Event{
-		ID:        id,
+		ID:        primitive.NewObjectID(),
 		EventKind: kind,
 		EventKey:  key,
 		MsgBody:   message,

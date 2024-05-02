@@ -113,8 +113,6 @@ func (l *Consumer) worker(ctx context.Context, msgChan <-chan events.Event) {
 }
 
 func (l *Consumer) dispatcher(ctx context.Context, message events.Event) error {
-	msg := new(events.Event)
-
 	handlerFunc := l.handlers[message.EventKey]
 
 	if handlerFunc == nil {
@@ -134,7 +132,7 @@ func (l *Consumer) dispatcher(ctx context.Context, message events.Event) error {
 		},
 	}
 
-	_, err := l.updater.UpdateOne(ctx, repository.NewQueryFilter().AddFilter("_id", msg.ID), updates)
+	_, err := l.updater.UpdateOne(ctx, repository.NewQueryFilter().AddFilter("_id", message.ID), updates)
 	if err != nil {
 		zap.L().Error("failed to update message processed", zap.Error(err), zap.String("message", message.EventKind))
 		return err
