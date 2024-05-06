@@ -1,6 +1,8 @@
 package response
 
-import "github.com/tejiriaustin/narx_api/models"
+import (
+	"github.com/tejiriaustin/narx_api/models"
+)
 
 func SingleAccountResponse(account *models.Account) map[string]interface{} {
 	return map[string]interface{}{
@@ -18,6 +20,24 @@ func MultipleAccountResponse(accounts []models.Account) interface{} {
 	m := make([]map[string]interface{}, 0, len(accounts))
 	for _, a := range accounts {
 		m = append(m, SingleAccountResponse(&a))
+	}
+	return m
+}
+
+func SingleSensorResponse(sensor *models.Sensor) map[string]interface{} {
+	return map[string]interface{}{
+		"_id":       sensor.ID.Hex(),
+		"name":      sensor.Name,
+		"ipAddress": sensor.IpAddress,
+		"status":    sensor.Status,
+		"token":     sensor.Token,
+	}
+}
+
+func MultipleSensorResponse(sensors []models.Sensor) interface{} {
+	m := make([]map[string]interface{}, 0, len(sensors))
+	for _, a := range sensors {
+		m = append(m, SingleSensorResponse(&a))
 	}
 	return m
 }

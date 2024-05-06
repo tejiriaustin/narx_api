@@ -40,4 +40,13 @@ func BindRoutes(
 		accounts.GET("/")
 		accounts.PUT("/edit-account", controllers.AccountsController.EditAccount(sc.AccountsService, repos.AccountsRepo))
 	}
+
+	sensors := r.Group("/sensors")
+	{
+		sensors.POST("/add", controllers.SensorController.AddSensor(passwordGenerator, sc.SensorService, repos.SensorRepo))
+		sensors.PUT("/update", controllers.SensorController.UpdateSensor(sc.SensorService, repos.SensorRepo))
+		sensors.GET("/:sensor_id", controllers.SensorController.GetSensor(sc.SensorService, repos.SensorRepo))
+		sensors.GET("/list", controllers.SensorController.ListSensor(sc.SensorService, repos.SensorRepo))
+		sensors.DELETE("/:sensor_id", controllers.SensorController.DeleteSensor(sc.SensorService, repos.SensorRepo))
+	}
 }

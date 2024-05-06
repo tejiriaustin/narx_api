@@ -37,3 +37,16 @@ type (
 		NewPassword string
 	}
 )
+
+type (
+	CreateSensorRequest struct {
+		Name      string `json:"name" bson:"name"`
+		IpAddress string `json:"ipAddress" bson:"ip_address"`
+	}
+
+	UpdateSensorRequest struct {
+		ID        string `json:"id" bson:"id"`
+		Name      string `json:"name" bson:"name"`
+		IpAddress string `json:"ipAddress" bson:"ip_address"`
+	}
+)

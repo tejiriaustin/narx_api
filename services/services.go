@@ -2,15 +2,17 @@ package services
 
 import (
 	"context"
+	"log"
+
 	"github.com/tejiriaustin/narx_api/constants"
 	"github.com/tejiriaustin/narx_api/env"
 	"github.com/tejiriaustin/narx_api/publisher"
-	"log"
 )
 
 type (
 	Container struct {
 		AccountsService AccountsServiceInterface
+		SensorService   SensorServiceInterface
 		Publisher       publisher.PublishInterface
 	}
 
@@ -24,6 +26,7 @@ func NewService(conf *env.Environment) *Container {
 	log.Println("Creating Container...")
 	return &Container{
 		AccountsService: NewAccountsService(conf),
+		SensorService:   NewSensorService(conf),
 	}
 }
 
