@@ -72,7 +72,7 @@ func (s *SensorService) CreateSensor(ctx context.Context,
 		AccountInfo: models.AccountInfo{},
 		Name:        input.Name,
 		IpAddress:   input.IpAddress,
-		Status:      "good",
+		Status:      "unknown",
 		Token:       passwordGen(),
 	}
 	sensor, err := sensorRepo.Create(ctx, sensor)
