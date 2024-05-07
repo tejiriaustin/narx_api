@@ -138,11 +138,7 @@ func (s *SensorService) ListSensors(ctx context.Context,
 	filter := repository.NewQueryFilter()
 
 	if input.Filters.AccountId != "" {
-		id, err := primitive.ObjectIDFromHex(input.Filters.AccountId)
-		if err != nil {
-			return nil, nil, errors.New("invalid id")
-		}
-		filter.AddFilter("account_info._id", id)
+		filter.AddFilter("account_info._id", input.Filters.AccountId)
 	}
 
 	if input.Filters.Query != "" {
