@@ -26,11 +26,12 @@ func MultipleAccountResponse(accounts []models.Account) interface{} {
 
 func SingleSensorResponse(sensor *models.Sensor) map[string]interface{} {
 	return map[string]interface{}{
-		"_id":       sensor.ID.Hex(),
-		"name":      sensor.Name,
-		"ipAddress": sensor.IpAddress,
-		"status":    sensor.Status,
-		"token":     sensor.Token,
+		"_id":          sensor.ID.Hex(),
+		"name":         sensor.Name,
+		"ipAddress":    sensor.IpAddress,
+		"status":       sensor.Status,
+		"token":        sensor.Token,
+		"account_info": sensor.AccountInfo,
 	}
 }
 
