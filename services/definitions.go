@@ -71,4 +71,12 @@ type (
 			sensorRepo *repository.Repository[models.Sensor],
 		) error
 	}
+
+	DeviceServiceInterface interface {
+		SaveDeviceToken(
+			ctx context.Context,
+			input SaveDeviceTokenInput,
+			devicesRepo *repository.Repository[models.Devices],
+		) error
+	}
 )

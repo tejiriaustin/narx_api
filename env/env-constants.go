@@ -18,4 +18,10 @@ const (
 	SmtpSender = "SMTP_ADDRESS"
 
 	SmtpPassword = "SMTP_PASSWORD"
+
+	FirebaseAuthKey = "FIREBASE_AUTH_KEY"
+
+	FirebaseRegistrationToken = "FIREBASE_REGISTRATION_TOKEN"
+
+	FirebaseServiceAccountKey = "FIREBASE_SERVICE_ACCOUNT_KEY"
 )

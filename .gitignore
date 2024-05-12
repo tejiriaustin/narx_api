@@ -1,3 +1,6 @@
 .DS_Store
 .idea
 .env
+
+google-services.json
+serviceAccountKey.json

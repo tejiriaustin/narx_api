@@ -17,6 +17,7 @@ type (
 	Container struct {
 		AccountsRepo *Repository[models.Account]
 		SensorRepo   *Repository[models.Sensor]
+		DevicesRepo  *Repository[models.Devices]
 	}
 	Repository[T models.SharedInterface] struct {
 		dbCollection database.Collection
@@ -29,6 +30,7 @@ func NewRepositoryContainer(dbConn *database.Client) *Container {
 	return &Container{
 		AccountsRepo: NewRepository[models.Account](dbConn.GetCollection("accounts")),
 		SensorRepo:   NewRepository[models.Sensor](dbConn.GetCollection("sensors")),
+		DevicesRepo:  NewRepository[models.Devices](dbConn.GetCollection("devices")),
 	}
 }
 

@@ -49,4 +49,9 @@ func BindRoutes(
 		sensors.GET("/list", controllers.SensorController.ListSensor(sc.SensorService, repos.SensorRepo))
 		sensors.DELETE("/:sensor_id", controllers.SensorController.DeleteSensor(sc.SensorService, repos.SensorRepo))
 	}
+
+	devices := r.Group("/devices")
+	{
+		devices.POST("", controllers.DeviceController.SaveDeviceToken(sc.DeviceService, repos.DevicesRepo))
+	}
 }

@@ -72,6 +72,8 @@ type (
 	}
 )
 
+var _ AccountsServiceInterface = (*AccountsService)(nil)
+
 func (s *AccountsService) CreateUser(ctx context.Context,
 	input AddAccountInput,
 	passwordGen utils.StrGenFunc,

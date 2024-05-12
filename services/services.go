@@ -6,14 +6,17 @@ import (
 
 	"github.com/tejiriaustin/narx_api/constants"
 	"github.com/tejiriaustin/narx_api/env"
+	"github.com/tejiriaustin/narx_api/messaging"
 	"github.com/tejiriaustin/narx_api/publisher"
 )
 
 type (
 	Container struct {
-		AccountsService AccountsServiceInterface
-		SensorService   SensorServiceInterface
-		Publisher       publisher.PublishInterface
+		AccountsService   AccountsServiceInterface
+		SensorService     SensorServiceInterface
+		DeviceService     DeviceServiceInterface
+		PushNotifications messaging.Messaging
+		Publisher         publisher.PublishInterface
 	}
 
 	Pager struct {
@@ -27,6 +30,7 @@ func NewService(conf *env.Environment) *Container {
 	return &Container{
 		AccountsService: NewAccountsService(conf),
 		SensorService:   NewSensorService(conf),
+		DeviceService:   NewDeviceService(conf),
 	}
 }
 

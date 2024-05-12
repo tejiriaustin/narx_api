@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/tejiriaustin/narx_api/messaging"
 	"github.com/tejiriaustin/narx_api/publisher"
 
 	"github.com/spf13/cobra"
@@ -41,6 +42,7 @@ func startApi(cmd *cobra.Command, args []string) {
 	rc := repository.NewRepositoryContainer(dbConn)
 
 	sc := services.NewService(&config)
+	sc.PushNotifications = messaging.NewFirebaseMessaging(&config)
 	sc.Publisher = publisher.NewPublisher(dbConn.GetCollection("notifications"))
 
 	server.Start(ctx, sc, rc, &config)
@@ -54,7 +56,10 @@ func setApiEnvironment() env.Environment {
 		SetEnv(env.MongoDsn, env.MustGetEnv(env.MongoDsn)).
 		SetEnv(env.MongoDbName, env.MustGetEnv(env.MongoDbName)).
 		SetEnv(env.JwtSecret, env.MustGetEnv(env.JwtSecret)).
-		SetEnv(env.FrontendUrl, env.MustGetEnv(env.FrontendUrl))
+		SetEnv(env.FrontendUrl, env.MustGetEnv(env.FrontendUrl)).
+		SetEnv(env.FirebaseAuthKey, env.MustGetEnv(env.FirebaseAuthKey)).
+		SetEnv(env.FirebaseRegistrationToken, env.MustGetEnv(env.FirebaseRegistrationToken)).
+		SetEnv(env.FirebaseServiceAccountKey, env.MustGetEnv(env.FirebaseServiceAccountKey))
 
 	return staticEnvironment
 }

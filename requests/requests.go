@@ -50,3 +50,9 @@ type (
 		IpAddress string `json:"ipAddress" bson:"ip_address"`
 	}
 )
+
+type (
+	SaveDeviceToken struct {
+		DeviceToken string `json:"deviceToken" bson:"device_token"`
+	}
+)

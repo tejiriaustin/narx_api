@@ -60,7 +60,10 @@ func setListenerEnvironment() env.Environment {
 		SetEnv(env.SmtpHost, env.MustGetEnv(env.SmtpHost)).
 		SetEnv(env.SmtpSender, env.MustGetEnv(env.SmtpSender)).
 		SetEnv(env.SmtpPort, env.MustGetEnv(env.SmtpPort)).
-		SetEnv(env.SmtpPassword, env.MustGetEnv(env.SmtpPassword))
+		SetEnv(env.SmtpPassword, env.MustGetEnv(env.SmtpPassword)).
+		SetEnv(env.FirebaseAuthKey, env.MustGetEnv(env.FirebaseAuthKey)).
+		SetEnv(env.FirebaseRegistrationToken, env.MustGetEnv(env.FirebaseRegistrationToken)).
+		SetEnv(env.FirebaseServiceAccountKey, env.MustGetEnv(env.FirebaseServiceAccountKey))
 
 	return staticEnvironment
 }

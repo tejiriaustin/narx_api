@@ -19,6 +19,7 @@ type (
 		conf               *env.Environment
 		AccountsController *AccountsController
 		SensorController   *SensorController
+		DeviceController   *DeviceController
 	}
 )
 
@@ -26,6 +27,7 @@ func BuildNewController(ctx context.Context, conf *env.Environment) *Controller 
 	return &Controller{
 		AccountsController: NewAccountController(conf),
 		SensorController:   NewSensorController(conf),
+		DeviceController:   NewDeviceController(conf),
 	}
 }
 
